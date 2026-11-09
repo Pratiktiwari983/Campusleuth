@@ -1,0 +1,285 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0b0f19;
+    color: #ffffff;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 8%;
+    background-color: #111827;
+    border-bottom: 1px solid #263044;
+}
+
+.logo {
+    font-size: 25px;
+    color: #8b5cf6;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #cbd5e1;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #8b5cf6;
+}
+
+.report-btn {
+    background: #7c3aed;
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Hero */
+.hero {
+    text-align: center;
+    padding: 110px 20px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    color: #94a3b8;
+    font-size: 18px;
+    margin-bottom: 35px;
+}
+
+/* Search */
+.search-box {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.search-box input {
+    width: 400px;
+    padding: 15px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: white;
+    outline: none;
+}
+
+.search-box button {
+    padding: 15px 25px;
+    background: #7c3aed;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.search-box button:hover {
+    background: #6d28d9;
+    transform: translateY(-2px);
+}
+
+/* Items */
+.items-section {
+    padding: 60px 8%;
+    min-height: 250px;
+}
+
+.items-section h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #94a3b8;
+    border-top: 1px solid #263044;
+    margin-top: 40px;
+}
+
+/* Items Container */
+
+.items-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+/* Item Card */
+
+.item-card {
+    background: #111827;
+    border: 1px solid #263044;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+    border-color: #8b5cf6;
+}
+
+/* Item Image */
+
+.item-image {
+    height: 180px;
+    background: #1e293b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 65px;
+}
+
+/* Item Information */
+
+.item-info {
+    padding: 20px;
+}
+
+.item-info h3 {
+    margin: 15px 0 10px;
+    font-size: 20px;
+}
+
+.item-info p {
+    color: #94a3b8;
+    margin-bottom: 10px;
+}
+
+.date {
+    font-size: 13px;
+}
+
+/* Badges */
+
+.lost-badge {
+    background: #7f1d1d;
+    color: #fca5a5;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+}
+
+.found-badge {
+    background: #14532d;
+    color: #86efac;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+}
+
+/* Card Button */
+
+.item-info button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #7c3aed;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.item-info button:hover {
+    background: #6d28d9;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+    .items-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Report Section */
+
+.report-section {
+    padding: 70px 8%;
+    max-width: 750px;
+    margin: auto;
+}
+
+.report-section h2 {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.report-section > p {
+    color: #94a3b8;
+    margin-bottom: 30px;
+}
+
+#reportForm {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #111827;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #263044;
+}
+
+#reportForm label {
+    color: #cbd5e1;
+    font-weight: 500;
+}
+
+#reportForm input,
+#reportForm select,
+#reportForm textarea {
+    padding: 13px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 7px;
+    color: white;
+    font-family: inherit;
+}
+
+#reportForm textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+#reportForm button {
+    padding: 14px;
+    background: #7c3aed;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#reportForm button:hover {
+    background: #6d28d9;
+}

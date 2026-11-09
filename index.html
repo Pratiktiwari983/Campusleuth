@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusLeuth | Campus Lost & Found</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <h2 class="logo">CampusLeuth</h2>
+
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Lost Items</a></li>
+                <li><a href="#">Found Items</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
+
+            <button class="report-btn">Report Item</button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Lost Something on Campus?</h1>
+            <p>Don't worry. Let's help you find it.</p>
+
+            <div class="search-box">
+                <input type="text" placeholder="Search for lost or found items...">
+                <button>Search</button>
+            </div>
+        </section>
+
+        <section class="items-section">
+            <h2>Recently Reported Items</h2>
+            <div class="items-container" id="items-container">
+                <div class="items-container">
+
+    <!-- Card 1 -->
+    <div class="item-card">
+        <div class="item-image">🎧</div>
+        <div class="item-info">
+            <span class="lost-badge">LOST</span>
+            <h3>Wireless Headphones</h3>
+            <p>Lost near Library</p>
+            <p class="date">November 8, 2026</p>
+            <button>View Details</button>
+        </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="item-card">
+        <div class="item-image">💳</div>
+        <div class="item-info">
+            <span class="found-badge">FOUND</span>
+            <h3>Student ID Card</h3>
+            <p>Found near Cafeteria</p>
+            <p class="date">November 7, 2026</p>
+            <button>View Details</button>
+        </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="item-card">
+        <div class="item-image">⌚</div>
+        <div class="item-info">
+            <span class="lost-badge">LOST</span>
+            <h3>Smart Watch</h3>
+            <p>Lost near Academic Block</p>
+            <p class="date">November 6, 2026</p>
+            <button>View Details</button>
+        </div>
+    </div>
+
+</div>
+            </div>
+        </section>
+    <!-- Report Item Section -->
+
+<section class="report-section" id="report">
+
+    <h2>Report an Item</h2>
+
+    <p>Help your campus community find lost belongings.</p>
+
+    <form id="reportForm">
+
+        <label>Item Name</label>
+        <input type="text" id="itemName"
+        placeholder="Enter item name" required>
+
+        <label>Report Type</label>
+        <select id="itemType" required>
+            <option value="">Select Type</option>
+            <option value="LOST">Lost</option>
+            <option value="FOUND">Found</option>
+        </select>
+
+        <label>Category</label>
+        <select id="itemCategory" required>
+            <option value="">Select Category</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Accessories">Accessories</option>
+            <option value="Documents">Documents</option>
+            <option value="Others">Others</option>
+        </select>
+
+        <label>Location</label>
+        <input type="text" id="itemLocation"
+        placeholder="Where was it lost/found?" required>
+
+        <label>Description</label>
+        <textarea id="itemDescription"
+        placeholder="Describe the item..." required></textarea>
+
+        <button type="submit">Submit Report</button>
+
+    </form>
+
+</section>
+    </main>
+
+    <footer>
+        <p>© 2026 CampusLeuth | Made for Campus Community</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
