@@ -1,32 +1,36 @@
-// Sample Items
+// CampusLeuth - Backend Connected
 
-let items = [
-    {
-        name: "Wireless Headphones",
-        type: "LOST",
-        category: "Electronics",
-        location: "Library",
-        description: "Black wireless headphones"
-    },
+const API_URL = "http://localhost:5000/api/items";
 
-    {
-        name: "Student ID Card",
-        type: "FOUND",
-        category: "Documents",
-        location: "Cafeteria",
-        description: "Student ID card found"
-    },
+let items = [];
 
-    {
-        name: "Smart Watch",
-        type: "LOST",
-        category: "Electronics",
-        location: "Academic Block",
-        description: "Black smart watch"
+
+// 1. Fetch Items From Backend
+
+async function loadItems() {
+    try {
+        const response = await fetch(API_URL);
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch items");
+        }
+
+        const result = await response.json();
+
+        items = result.data;
+
+        displayItems(items);
+
+    } catch (error) {
+        console.error("Error loading items:", error);
+
+        document.getElementById("items-container").innerHTML =
+            "<p>Unable to load items. Please try again.</p>";
     }
-];
+}
 
-// Display Items
+
+// 2. Display Items
 
 function displayItems(data) {
 
@@ -34,14 +38,29 @@ function displayItems(data) {
 
     container.innerHTML = "";
 
-    data.forEach(function(item) {
+    if (data.length === 0) {
+        container.innerHTML = `
+            <p style="color: #94a3b8;">
+                No items found!
+            </p>
+        `;
+        return;
+    }
+
+    data.forEach(item => {
 
         const card = document.createElement("div");
 
-        card.className = "item-card";
+        card.classList.add("item-card");
+
+        const date = item.createdAt
+            ? new Date(item.createdAt).toLocaleDateString()
+            : "";
 
         card.innerHTML = `
-            <div class="item-image">📦</div>
+            <div class="item-image">
+                ${item.type === "LOST" ? "🔍" : "📦"}
+            </div>
 
             <div class="item-info">
 
@@ -57,20 +76,92 @@ function displayItems(data) {
 
                 <p>${item.description}</p>
 
+                <p class="date">${date}</p>
+
+                <button class="view-btn">
+                    View Details
+                </button>
+
             </div>
         `;
+
+        const viewButton = card.querySelector(".view-btn");
+
+        viewButton.addEventListener("click", () => {
+            viewItem(item._id);
+        });
 
         container.appendChild(card);
 
     });
+}
+
+
+// 3. View Item Details
+
+function viewItem(id) {
+
+    const selectedItem = items.find(item => item._id === id);
+
+    if (!selectedItem) return;
+
+    alert(
+        "Item: " + selectedItem.name +
+        "\nType: " + selectedItem.type +
+        "\nCategory: " + selectedItem.category +
+        "\nLocation: " + selectedItem.location +
+        "\nDescription: " + selectedItem.description
+    );
 
 }
 
-// Report Form
 
-const form = document.getElementById("reportForm");
+// 4. Search Functionality
 
-form.addEventListener("submit", function(event) {
+const searchInput = document.getElementById("searchInput");
+
+const searchButton = document.getElementById("searchButton");
+
+
+function searchItems() {
+
+    const query = searchInput.value.toLowerCase().trim();
+
+    const filteredItems = items.filter(item => {
+
+        return (
+            item.name.toLowerCase().includes(query) ||
+            item.category.toLowerCase().includes(query) ||
+            item.location.toLowerCase().includes(query) ||
+            item.description.toLowerCase().includes(query) ||
+            item.type.toLowerCase().includes(query)
+        );
+
+    });
+
+    displayItems(filteredItems);
+
+}
+
+
+searchButton.addEventListener("click", searchItems);
+
+
+searchInput.addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+        searchItems();
+    }
+
+});
+
+
+// 5. Report Item Form
+
+const reportForm = document.getElementById("reportForm");
+
+
+reportForm.addEventListener("submit", async function(event) {
 
     event.preventDefault();
 
@@ -88,26 +179,84 @@ form.addEventListener("submit", function(event) {
 
     };
 
-    items.unshift(newItem);
 
-    localStorage.setItem("campusItems", JSON.stringify(items));
+    try {
 
-    displayItems(items);
+        const response = await fetch(API_URL, {
 
-    form.reset();
+            method: "POST",
 
-    alert("Item reported successfully!");
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(newItem)
+
+        });
+
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.message || "Failed to report item");
+        }
+
+        alert("Your item has been reported successfully!");
+
+        reportForm.reset();
+
+        loadItems();
+
+    } catch (error) {
+
+        console.error("Error reporting item:", error);
+
+        alert("Unable to report item. Please try again.");
+
+    }
 
 });
 
-// Load Saved Items
 
-const savedItems = localStorage.getItem("campusItems");
+// 6. Image Preview
 
-if (savedItems) {
-    items = JSON.parse(savedItems);
+const imageInput = document.getElementById("itemImage");
+
+if (imageInput) {
+
+    imageInput.addEventListener("change", function() {
+
+        const file = imageInput.files[0];
+
+        if (file) {
+
+            const imageURL = URL.createObjectURL(file);
+
+            let preview = document.getElementById("imagePreview");
+
+            if (!preview) {
+
+                preview = document.createElement("img");
+
+                preview.id = "imagePreview";
+
+                preview.style.width = "150px";
+
+                preview.style.marginTop = "10px";
+
+                imageInput.after(preview);
+
+            }
+
+            preview.src = imageURL;
+
+        }
+
+    });
+
 }
 
-// Initial Display
 
-displayItems(items);
+// 7. Load Items When Website Opens
+
+loadItems();

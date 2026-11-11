@@ -283,3 +283,65 @@ footer {
 #reportForm button:hover {
     background: #6d28d9;
 }
+/* Report Section */
+
+.report-section {
+    max-width: 750px;
+    margin: 60px auto;
+    padding: 40px;
+}
+
+.report-section h2 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.report-section p {
+    color: #94a3b8;
+    margin-bottom: 25px;
+}
+
+#reportForm {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #111827;
+    padding: 30px;
+    border: 1px solid #263044;
+    border-radius: 12px;
+}
+
+#reportForm label {
+    color: #cbd5e1;
+    font-weight: 600;
+}
+
+#reportForm input,
+#reportForm select,
+#reportForm textarea {
+    padding: 13px;
+    background: #1e293b;
+    color: white;
+    border: 1px solid #334155;
+    border-radius: 7px;
+    font-family: inherit;
+}
+
+#reportForm textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+#reportForm button {
+    padding: 14px;
+    background: #7c3aed;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#reportForm button:hover {
+    background: #6d28d9;
+}
