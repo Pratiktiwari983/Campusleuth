@@ -1,284 +1,456 @@
-// CampusLeuth - Backend Connected
-
 const API_URL = "https://campusleuth.onrender.com/api/items";
+const UPLOAD_URL = "https://campusleuth.onrender.com/api/upload";
 
 let items = [];
+let previewObjectUrl = null;
 
+const byId = (id) => document.getElementById(id);
 
-// 1. Fetch Items From Backend
+const asText = (value) =>
+    value === null || value === undefined ? "" : String(value);
 
-async function loadItems() {
+async function readJsonResponse(response) {
+    const text = await response.text();
+    let data;
+
     try {
-        const response = await fetch(API_URL);
+        data = text ? JSON.parse(text) : {};
+    } catch {
+        throw new Error(
+            `Server returned an invalid response (HTTP ${response.status}).`
+        );
+    }
 
-        if (!response.ok) {
-            throw new Error("Failed to fetch items");
-        }
+    if (!response.ok) {
+        throw new Error(
+            data.message || data.error ||
+            `Request failed (HTTP ${response.status}).`
+        );
+    }
 
-        const result = await response.json();
+    return data;
+}
 
-        items = result.data;
+function makeElement(tag, className, text) {
+    const element = document.createElement(tag);
 
-        displayItems(items);
+    if (className) element.className = className;
+    if (text !== undefined) element.textContent = text;
 
-    } catch (error) {
-        console.error("Error loading items:", error);
+    return element;
+}
 
-        document.getElementById("items-container").innerHTML =
-            "<p>Unable to load items. Please try again.</p>";
+function safeImageUrl(value) {
+    try {
+        const url = new URL(asText(value));
+
+        return url.protocol === "https:" &&
+            url.hostname === "res.cloudinary.com"
+            ? url.href
+            : "";
+    } catch {
+        return "";
     }
 }
 
+function displayItems(list) {
+    const container = byId("items-container");
 
-// Display Items
+    if (!container) return;
 
-function displayItems(data) {
+    container.replaceChildren();
 
-    const container = document.getElementById("items-container");
-
-    container.innerHTML = "";
-
-    if (data.length === 0) {
-        container.innerHTML = `
-            <p style="color: #94a3b8;">
-                No items found!
-            </p>
-        `;
+    if (!Array.isArray(list) || list.length === 0) {
+        container.appendChild(
+            makeElement(
+                "p",
+                "empty-state",
+                "No items found. Be the first to report one!"
+            )
+        );
         return;
     }
 
-    data.forEach(item => {
+    list.forEach((item) => {
+        const card = makeElement("article", "item-card");
 
-        const card = document.createElement("div");
+        const imageUrl = safeImageUrl(item.imageUrl);
 
-        card.classList.add("item-card");
+        if (imageUrl) {
+            const image = makeElement("img", "uploaded-image");
 
-        const date = item.createdAt
-            ? new Date(item.createdAt).toLocaleDateString()
-            : "";
+            image.src = imageUrl;
+            image.alt = asText(item.name) || "Reported item";
+            image.loading = "lazy";
+            image.referrerPolicy = "no-referrer";
 
-        // Display uploaded image or default icon
-        const imageContent = item.imageUrl
-            ? `<img src="${item.imageUrl}" alt="${item.name}" class="uploaded-image">`
-            : `<div class="item-image">
-                   ${item.type === "LOST" ? "🔍" : "📦"}
-               </div>`;
+            card.appendChild(image);
+        } else {
+            card.appendChild(
+                makeElement("div", "item-image", "📦")
+            );
+        }
 
-        card.innerHTML = `
-            ${imageContent}
+        const info = makeElement("div", "item-info");
 
-            <div class="item-info">
+        const type = asText(item.type).toUpperCase();
 
-                <span class="${item.type === "LOST" ? "lost-badge" : "found-badge"}">
-                    ${item.type}
-                </span>
+        info.appendChild(
+            makeElement(
+                "span",
+                type === "LOST" ? "lost-badge" : "found-badge",
+                type || "ITEM"
+            )
+        );
 
-                <h3>${item.name}</h3>
+        info.appendChild(
+            makeElement(
+                "h3",
+                "",
+                asText(item.name) || "Untitled item"
+            )
+        );
 
-                <p>Category: ${item.category}</p>
+        info.appendChild(
+            makeElement(
+                "p",
+                "",
+                `Category: ${asText(item.category) || "Not specified"}`
+            )
+        );
 
-                <p>Location: ${item.location}</p>
+        info.appendChild(
+            makeElement(
+                "p",
+                "",
+                `Location: ${asText(item.location) || "Not specified"}`
+            )
+        );
 
-                <p>${item.description}</p>
+        info.appendChild(
+            makeElement(
+                "p",
+                "",
+                asText(item.description) || "No description provided."
+            )
+        );
 
-                <p class="date">${date}</p>
+        const createdAt = item.createdAt
+            ? new Date(item.createdAt)
+            : null;
 
-                <button class="view-btn">
-                    View Details
-                </button>
+        const dateText =
+            createdAt && !Number.isNaN(createdAt.getTime())
+                ? createdAt.toLocaleDateString()
+                : "";
 
-            </div>
-        `;
+        if (dateText) {
+            info.appendChild(
+                makeElement("small", "date", dateText)
+            );
+        }
 
-        const viewButton = card.querySelector(".view-btn");
+        const viewButton = makeElement(
+            "button",
+            "view-btn",
+            "View Details"
+        );
+
+        viewButton.type = "button";
 
         viewButton.addEventListener("click", () => {
             viewItem(item._id);
         });
 
+        info.appendChild(viewButton);
+        card.appendChild(info);
         container.appendChild(card);
-
     });
 }
-
-// 3. View Item Details
 
 function viewItem(id) {
-
-    const selectedItem = items.find(item => item._id === id);
-
-    if (!selectedItem) return;
-
-    alert(
-        "Item: " + selectedItem.name +
-        "\nType: " + selectedItem.type +
-        "\nCategory: " + selectedItem.category +
-        "\nLocation: " + selectedItem.location +
-        "\nDescription: " + selectedItem.description
+    const item = items.find(
+        (entry) => asText(entry._id) === asText(id)
     );
 
+    if (!item) return;
+
+    const details = [
+        `Name: ${asText(item.name)}`,
+        `Type: ${asText(item.type)}`,
+        `Category: ${asText(item.category)}`,
+        `Location: ${asText(item.location)}`,
+        `Description: ${asText(item.description)}`
+    ].join("\n");
+
+    window.alert(details);
 }
 
-
-// 4. Search Functionality
-
-const searchInput = document.getElementById("searchInput");
-
-const searchButton = document.getElementById("searchButton");
-
-
-function searchItems() {
-
-    const query = searchInput.value.toLowerCase().trim();
-
-    const filteredItems = items.filter(item => {
-
-        return (
-            item.name.toLowerCase().includes(query) ||
-            item.category.toLowerCase().includes(query) ||
-            item.location.toLowerCase().includes(query) ||
-            item.description.toLowerCase().includes(query) ||
-            item.type.toLowerCase().includes(query)
-        );
-
-    });
-
-    displayItems(filteredItems);
-
-}
-
-
-searchButton.addEventListener("click", searchItems);
-
-
-searchInput.addEventListener("keydown", function(event) {
-
-    if (event.key === "Enter") {
-        searchItems();
-    }
-
-});
-
-
-// 5. Report Item Form
-
-const reportForm = document.getElementById("reportForm");
-
-reportForm.addEventListener("submit", async function(event) {
-    event.preventDefault();
+async function loadItems() {
+    const container = byId("items-container");
 
     try {
-        let imageUrl = "";
+        const response = await fetch(API_URL);
+        const result = await readJsonResponse(response);
 
-        // 1. Get selected image
-        const imageFile = document.getElementById("itemImage").files[0];
-
-        // 2. Upload image to Cloudinary
-        if (imageFile) {
-            const formData = new FormData();
-            formData.append("image", imageFile);
-
-            const uploadResponse = await fetch(
-                "https://campusleuth.onrender.com/api/upload",
-                {
-                    method: "POST",
-                    body: formData
-                }
+        if (!Array.isArray(result.data)) {
+            throw new Error(
+                "The server response did not contain an items list."
             );
-
-            const uploadResult = await uploadResponse.json();
-
-            if (!uploadResponse.ok) {
-                throw new Error(uploadResult.message);
-            }
-
-            imageUrl = uploadResult.imageUrl;
         }
 
-        // 3. Create item object
-        const newItem = {
-            name: document.getElementById("itemName").value,
-            type: document.getElementById("itemType").value,
-            category: document.getElementById("itemCategory").value,
-            location: document.getElementById("itemLocation").value,
-            description: document.getElementById("itemDescription").value,
-            imageUrl: imageUrl
-        };
-        console.log("Form data:", {
-            name: document.getElementById("itemName").value,
-            type: document.getElementById("itemType").value,
-            category: document.getElementById("itemCategory").value,
-            location: document.getElementById("itemLocation").value,
-            description: document.getElementById("itemDescription").value
-        });
-
-        // 4. Save item in MongoDB
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(newItem)
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-            throw new Error(result.message || "Failed to report item");
-        }
-
-        alert("Your item has been reported successfully!");
-
-        reportForm.reset();
-
-        // 5. Refresh items
-        loadItems();
+        items = result.data;
+        displayItems(items);
 
     } catch (error) {
-        console.error("Error reporting item:", error);
-        alert("Unable to report item: " + error.message);
-    }
-    });
+        console.error("Unable to load items:", error);
 
-// 6. Image Preview
-
-const imageInput = document.getElementById("itemImage");
-
-if (imageInput) {
-
-    imageInput.addEventListener("change", function() {
-
-        const file = imageInput.files[0];
-
-        if (file) {
-
-            const imageURL = URL.createObjectURL(file);
-
-            let preview = document.getElementById("imagePreview");
-
-            if (!preview) {
-
-                preview = document.createElement("img");
-
-                preview.id = "imagePreview";
-
-                preview.style.width = "150px";
-
-                preview.style.marginTop = "10px";
-
-                imageInput.after(preview);
-
-            }
-
-            preview.src = imageURL;
-
+        if (container) {
+            container.replaceChildren(
+                makeElement(
+                    "p",
+                    "empty-state",
+                    "Could not load items right now. Please refresh and try again."
+                )
+            );
         }
-
-    });
-
+    }
 }
 
+function searchItems() {
+    const input = byId("searchInput");
 
-// 7. Load Items When Website Opens
+    const query = asText(input?.value)
+        .trim()
+        .toLowerCase();
 
-loadItems();
+    if (!query) {
+        displayItems(items);
+        return;
+    }
+
+    const filtered = items.filter((item) => {
+        const searchable = [
+            item.name,
+            item.category,
+            item.location,
+            item.description,
+            item.type
+        ]
+            .map((value) => asText(value).toLowerCase())
+            .join(" ");
+
+        return searchable.includes(query);
+    });
+
+    displayItems(filtered);
+}
+
+function clearImagePreview() {
+    const preview = byId("imagePreview");
+
+    if (preview) preview.remove();
+
+    if (previewObjectUrl) {
+        URL.revokeObjectURL(previewObjectUrl);
+        previewObjectUrl = null;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const searchInput = byId("searchInput");
+    const searchButton = byId("searchButton");
+    const form = byId("reportForm");
+    const imageInput = byId("itemImage");
+
+    searchButton?.addEventListener("click", searchItems);
+
+    searchInput?.addEventListener("input", searchItems);
+
+    imageInput?.addEventListener("change", () => {
+
+        clearImagePreview();
+
+        const file = imageInput.files?.[0];
+
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            window.alert("Please select an image file.");
+            imageInput.value = "";
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            window.alert("Image size must be 5 MB or less.");
+            imageInput.value = "";
+            return;
+        }
+
+        previewObjectUrl = URL.createObjectURL(file);
+
+        const preview = makeElement("img");
+
+        preview.id = "imagePreview";
+        preview.src = previewObjectUrl;
+        preview.alt = "Selected image preview";
+
+        preview.style.display = "block";
+        preview.style.maxWidth = "180px";
+        preview.style.maxHeight = "150px";
+        preview.style.objectFit = "cover";
+        preview.style.marginTop = "12px";
+
+        imageInput.insertAdjacentElement(
+            "afterend",
+            preview
+        );
+    });
+
+    form?.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        const name = asText(byId("itemName")?.value).trim();
+
+        const type = asText(byId("itemType")?.value)
+            .trim()
+            .toUpperCase();
+
+        const category = asText(byId("itemCategory")?.value).trim();
+
+        const location = asText(byId("itemLocation")?.value).trim();
+
+        const description = asText(
+            byId("itemDescription")?.value
+        ).trim();
+
+        const imageFile = imageInput?.files?.[0];
+
+        if (
+            !name ||
+            !["LOST", "FOUND"].includes(type) ||
+            !category ||
+            !location ||
+            !description
+        ) {
+            window.alert("Please fill in all required fields.");
+            return;
+        }
+
+        const submitButton = form.querySelector(
+            'button[type="submit"], input[type="submit"]'
+        );
+
+        const originalButtonText =
+            submitButton?.tagName === "INPUT"
+                ? submitButton.value
+                : submitButton?.textContent;
+
+        if (submitButton) {
+            submitButton.disabled = true;
+
+            if (submitButton.tagName === "INPUT") {
+                submitButton.value = "Submitting...";
+            } else {
+                submitButton.textContent = "Submitting...";
+            }
+        }
+
+        try {
+
+            let imageUrl = "";
+
+            if (imageFile) {
+
+                if (
+                    !imageFile.type.startsWith("image/") ||
+                    imageFile.size > 5 * 1024 * 1024
+                ) {
+                    throw new Error(
+                        "Choose a valid image that is 5 MB or smaller."
+                    );
+                }
+
+                const formData = new FormData();
+
+                formData.append("image", imageFile);
+
+                const uploadResponse = await fetch(
+                    UPLOAD_URL,
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+                const uploadResult =
+                    await readJsonResponse(uploadResponse);
+
+                imageUrl = asText(uploadResult.imageUrl);
+
+                if (!safeImageUrl(imageUrl)) {
+                    throw new Error(
+                        "Image upload did not return a valid image URL."
+                    );
+                }
+            }
+
+            const response = await fetch(API_URL, {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    name,
+                    type,
+                    category,
+                    location,
+                    description,
+                    imageUrl
+                })
+            });
+
+            await readJsonResponse(response);
+
+            form.reset();
+
+            clearImagePreview();
+
+            await loadItems();
+
+            window.alert(
+                "Your report has been submitted successfully!"
+            );
+
+        } catch (error) {
+
+            console.error("Unable to submit item:", error);
+
+            window.alert(
+                error.message ||
+                "Something went wrong. Please try again."
+            );
+
+        } finally {
+
+            if (submitButton) {
+
+                submitButton.disabled = false;
+
+                if (submitButton.tagName === "INPUT") {
+                    submitButton.value =
+                        originalButtonText || "Submit";
+                } else {
+                    submitButton.textContent =
+                        originalButtonText || "Submit";
+                }
+            }
+        }
+    });
+
+    loadItems();
+});
