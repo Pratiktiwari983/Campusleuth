@@ -345,3 +345,10 @@ footer {
 #reportForm button:hover {
     background: #6d28d9;
 }
+.uploaded-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+}

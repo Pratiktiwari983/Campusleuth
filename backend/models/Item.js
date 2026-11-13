@@ -28,6 +28,10 @@ const itemSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        imageUrl: {
+            type: String,
+            default: ""
+    },
 
         status: {
             type: String,
