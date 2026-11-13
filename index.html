@@ -1,152 +1,564 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#090d18">
+
+    <meta name="description"
+        content="CampusLeuth is a campus-focused Lost and Found platform helping students reconnect with misplaced belongings.">
+
     <title>CampusLeuth | Campus Lost &amp; Found</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+
+    <!-- NAVBAR -->
+
     <header class="site-header">
+
         <nav class="navbar" aria-label="Main navigation">
+
             <a class="brand" href="#home" aria-label="CampusLeuth home">
+
                 <span class="brand-mark">C</span>
+
                 <span>Campus<span class="brand-accent">Leuth</span></span>
+
             </a>
 
             <ul class="nav-links">
+
                 <li><a href="#home">Home</a></li>
+
                 <li><a href="#items">Browse Items</a></li>
+
                 <li><a href="#about">About</a></li>
+
             </ul>
 
-            <button class="report-btn" type="button" onclick="document.getElementById('report').scrollIntoView({behavior:'smooth'})">
+            <button class="report-btn" type="button"
+                onclick="document.getElementById('report').scrollIntoView({behavior:'smooth'})">
+
                 Report an item <span aria-hidden="true">↗</span>
+
             </button>
+
         </nav>
+
     </header>
 
+
     <main>
+
+        <!-- HERO SECTION -->
+
         <section class="hero" id="home">
+
             <div class="hero-glow hero-glow-one"></div>
+
             <div class="hero-glow hero-glow-two"></div>
+
             <div class="hero-content">
-                <div class="eyebrow"><span class="status-dot"></span> YOUR CAMPUS. YOUR COMMUNITY.</div>
-                <h1>Lost something?<br><span>Let’s bring it back.</span></h1>
-                <p class="hero-copy">The easiest way to reconnect with the things you’ve misplaced on campus. Search what's been found or report what’s missing.</p>
+
+                <div class="eyebrow">
+
+                    <span class="status-dot"></span>
+
+                    YOUR CAMPUS. YOUR COMMUNITY.
+
+                </div>
+
+                <h1>
+                    Lost something?<br>
+                    <span>Let’s bring it back.</span>
+                </h1>
+
+                <p class="hero-copy">
+
+                    The easiest way to reconnect with the things
+                    you’ve misplaced on campus. Search what's been
+                    found or report what’s missing.
+
+                </p>
 
                 <div class="search-box">
+
                     <span class="search-icon" aria-hidden="true">⌕</span>
-                    <input type="text" id="searchInput" placeholder="Search for keys, wallet, ID card..." aria-label="Search reported items">
-                    <button id="searchButton" type="button">Search <span aria-hidden="true">→</span></button>
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search for keys, wallet, ID card..."
+                        aria-label="Search reported items"
+                    >
+
+                    <button id="searchButton" type="button">
+
+                        Search <span aria-hidden="true">→</span>
+
+                    </button>
+
                 </div>
-                <div class="hero-note"><span>✦</span> A little help from your campus community goes a long way.</div>
+
+                <div class="hero-note">
+
+                    <span>✦</span>
+                    A little help from your campus community goes a long way.
+
+                </div>
+
             </div>
+
+
             <div class="hero-decoration" aria-hidden="true">
+
                 <div class="orbit orbit-one"></div>
+
                 <div class="orbit orbit-two"></div>
-                <div class="float-card float-card-main"><span class="float-icon">⌁</span><span><b>Lost &amp; Found</b><small>One campus, connected</small></span><i>✦</i></div>
-                <div class="float-card float-card-small"><span class="mini-check">✓</span><span><b>Community powered</b><small>Find what matters</small></span></div>
+
+                <div class="float-card float-card-main">
+
+                    <span class="float-icon">⌁</span>
+
+                    <span>
+                        <b>Lost &amp; Found</b>
+                        <small>One campus, connected</small>
+                    </span>
+
+                    <i>✦</i>
+
+                </div>
+
+                <div class="float-card float-card-small">
+
+                    <span class="mini-check">✓</span>
+
+                    <span>
+                        <b>Community powered</b>
+                        <small>Find what matters</small>
+                    </span>
+
+                </div>
+
             </div>
+
         </section>
 
+
+        <!-- BROWSE ITEMS -->
+
         <section class="items-section section-wrap" id="items">
+
             <div class="section-heading">
+
                 <div>
+
                     <div class="section-kicker">THE LATEST FINDS</div>
+
                     <h2>Recently reported <span>items</span></h2>
-                    <p>Take a look. Your missing item might already be here.</p>
+
+                    <p>
+                        Take a look. Your missing item might already be here.
+                    </p>
+
                 </div>
-                <span class="live-label"><span class="status-dot"></span> CAMPUS UPDATES</span>
+
+                <span class="live-label">
+
+                    <span class="status-dot"></span>
+                    CAMPUS UPDATES
+
+                </span>
+
             </div>
 
             <div class="items-container" id="items-container"></div>
+
         </section>
+
+
+        <!-- REPORT SECTION -->
 
         <section class="report-section section-wrap" id="report">
+
             <div class="report-intro">
+
                 <div class="section-kicker">HELP SOMEONE FIND IT</div>
-                <h2>Found something?<br><span>Be someone’s good news.</span></h2>
-                <p>Every report makes it easier for someone in your campus community to get their belongings back. Share a few details and help close the loop.</p>
+
+                <h2>
+                    Found something?<br>
+                    <span>Be someone’s good news.</span>
+                </h2>
+
+                <p>
+
+                    Every report makes it easier for someone in your
+                    campus community to get their belongings back.
+                    Share a few details and help close the loop.
+
+                </p>
+
                 <div class="report-points">
-                    <div><span class="point-icon">01</span><span><b>Add item details</b><small>Tell us what it is and where you saw it.</small></span></div>
-                    <div><span class="point-icon">02</span><span><b>Share a photo</b><small>A picture helps people recognize their item.</small></span></div>
-                    <div><span class="point-icon">03</span><span><b>Reconnect</b><small>Help the right person find their belonging.</small></span></div>
+
+                    <div>
+
+                        <span class="point-icon">01</span>
+
+                        <span>
+                            <b>Add item details</b>
+                            <small>Tell us what it is and where you saw it.</small>
+                        </span>
+
+                    </div>
+
+                    <div>
+
+                        <span class="point-icon">02</span>
+
+                        <span>
+                            <b>Share a photo</b>
+                            <small>A picture helps people recognize their item.</small>
+                        </span>
+
+                    </div>
+
+                    <div>
+
+                        <span class="point-icon">03</span>
+
+                        <span>
+                            <b>Reconnect</b>
+                            <small>Help the right person find their belonging.</small>
+                        </span>
+
+                    </div>
+
                 </div>
+
             </div>
+
+
+            <!-- REPORT FORM -->
 
             <div class="form-card">
+
                 <div class="form-heading">
-                    <div><span class="form-kicker">CAMPUSLEUTH FORM</span><h3>Report an item</h3></div>
+
+                    <div>
+
+                        <span class="form-kicker">CAMPUSLEUTH FORM</span>
+
+                        <h3>Report an item</h3>
+
+                    </div>
+
                     <span class="form-sparkle">✳</span>
+
                 </div>
-                <p class="form-subtitle">Fill in the details below to create a report.</p>
+
+                <p class="form-subtitle">
+                    Fill in the details below to create a report.
+                </p>
+
 
                 <form id="reportForm">
+
                     <div class="form-field">
+
                         <label for="itemName">Item name</label>
-                        <input type="text" id="itemName" placeholder="e.g. Black wireless headphones" required>
+
+                        <input
+                            type="text"
+                            id="itemName"
+                            placeholder="e.g. Black wireless headphones"
+                            required
+                        >
+
                     </div>
+
 
                     <div class="form-row">
+
                         <div class="form-field">
+
                             <label for="itemType">Report type</label>
+
                             <select id="itemType" required>
+
                                 <option value="">Select type</option>
+
                                 <option value="LOST">Lost</option>
+
                                 <option value="FOUND">Found</option>
+
                             </select>
+
                         </div>
+
+
                         <div class="form-field">
+
                             <label for="itemCategory">Category</label>
+
                             <select id="itemCategory" required>
+
                                 <option value="">Select category</option>
+
                                 <option value="Electronics">Electronics</option>
+
                                 <option value="Accessories">Accessories</option>
+
                                 <option value="Documents">Documents</option>
+
                                 <option value="Others">Others</option>
+
                             </select>
+
                         </div>
+
                     </div>
 
+
                     <div class="form-field">
+
                         <label for="itemLocation">Location</label>
-                        <input type="text" id="itemLocation" placeholder="Where was it lost or found?" required>
+
+                        <input
+                            type="text"
+                            id="itemLocation"
+                            placeholder="Where was it lost or found?"
+                            required
+                        >
+
                     </div>
 
+
                     <div class="form-field">
+
                         <label for="itemDescription">Description</label>
-                        <textarea id="itemDescription" rows="4" placeholder="Add color, brand, distinguishing details..." required></textarea>
+
+                        <textarea
+                            id="itemDescription"
+                            rows="4"
+                            placeholder="Add color, brand, distinguishing details..."
+                            required
+                        ></textarea>
+
                     </div>
+
 
                     <div class="form-field">
-                        <label for="itemImage">Item image <span class="optional-label">OPTIONAL</span></label>
-                        <input class="file-input" type="file" id="itemImage" accept="image/*">
+
+                        <label for="itemImage">
+
+                            Item image
+                            <span class="optional-label">OPTIONAL</span>
+
+                        </label>
+
+                        <input
+                            class="file-input"
+                            type="file"
+                            id="itemImage"
+                            accept="image/*"
+                        >
+
                     </div>
 
-                    <button class="submit-btn" type="submit">Submit report <span aria-hidden="true">→</span></button>
-                    <p class="form-footnote"><span>⌑</span> Please don’t include private or sensitive information.</p>
+
+                    <button class="submit-btn" type="submit">
+
+                        Submit report <span aria-hidden="true">→</span>
+
+                    </button>
+
+                    <p class="form-footnote">
+
+                        <span>⌑</span>
+                        Please don’t include private or sensitive information.
+
+                    </p>
+
                 </form>
+
             </div>
+
         </section>
 
-        <section class="about-strip section-wrap" id="about">
-            <div class="about-symbol">C.</div>
-            <div><div class="section-kicker">BUILT FOR CAMPUS LIFE</div><h2>Good things find their way back.</h2></div>
-            <p>CampusLeuth brings students together to make lost and found simpler, quicker, and more human.</p>
+
+        <!-- ABOUT SECTION -->
+
+        <section class="about-section section-wrap" id="about">
+
+            <div class="about-container">
+
+                <div class="section-kicker">
+                    ABOUT THE PROJECT
+                </div>
+
+                <h2>
+                    Making Lost Things
+                    <span>Found Again.</span>
+                </h2>
+
+                <p class="about-description">
+
+                    CampusLeuth is a campus-focused Lost &amp; Found
+                    platform designed to help students reconnect
+                    with their misplaced belongings.
+
+                </p>
+
+                <p class="about-description">
+
+                    Losing personal belongings on campus can be stressful.
+                    CampusLeuth makes the process easier by allowing
+                    students to report lost or found items, upload
+                    photographs, and search existing reports in one place.
+
+                    It aims to complement the existing physical
+                    Lost &amp; Found facility with a convenient digital platform.
+
+                </p>
+
+
+                <!-- PROJECT FEATURES -->
+
+                <div class="about-features">
+
+                    <div class="about-feature">
+
+                        <span class="about-feature-icon">🔍</span>
+
+                        <h3>Easy Discovery</h3>
+
+                        <p>
+                            Search for misplaced belongings
+                            in one convenient place.
+                        </p>
+
+                    </div>
+
+
+                    <div class="about-feature">
+
+                        <span class="about-feature-icon">📸</span>
+
+                        <h3>Photo Reports</h3>
+
+                        <p>
+                            Upload photographs to help
+                            identify lost and found items.
+                        </p>
+
+                    </div>
+
+
+                    <div class="about-feature">
+
+                        <span class="about-feature-icon">🤝</span>
+
+                        <h3>Community Support</h3>
+
+                        <p>
+                            Help fellow students reconnect
+                            with their belongings.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TECHNOLOGY -->
+
+                <div class="tech-stack">
+
+                    <span class="tech-stack-label">BUILT WITH</span>
+
+                    <div class="tech-tags">
+
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JavaScript</span>
+                        <span>Node.js</span>
+                        <span>Express.js</span>
+                        <span>MongoDB</span>
+                        <span>Cloudinary</span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CREATOR -->
+
+                <div class="creator-card">
+
+                    <div class="creator-avatar">P</div>
+
+                    <div class="creator-info">
+
+                        <span class="creator-label">BUILT BY</span>
+
+                        <h3>Pratik Tiwari</h3>
+
+                        <p>
+                            B.Tech Computer Science &amp; Engineering
+                        </p>
+
+                        <p>
+                            Bennett University
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </section>
+
     </main>
 
+
+    <!-- FOOTER -->
+
     <footer class="site-footer">
-        <a class="brand footer-brand" href="#home"><span class="brand-mark">C</span><span>Campus<span class="brand-accent">Leuth</span></span></a>
-        <p>Made for the campus community <span>✦</span></p>
-        <small>© 2026 CampusLeuth. All rights reserved.</small>
+
+        <a class="brand footer-brand" href="#home">
+
+            <span class="brand-mark">C</span>
+
+            <span>
+                Campus<span class="brand-accent">Leuth</span>
+            </span>
+
+        </a>
+
+        <p>
+            Made for the campus community <span>✦</span>
+        </p>
+
+        <small>
+            © 2026 CampusLeuth. All rights reserved.
+        </small>
+
     </footer>
 
+
     <script src="script.js"></script>
+
 </body>
+
 </html>
