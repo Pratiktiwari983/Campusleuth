@@ -1,6 +1,6 @@
 // CampusLeuth - Backend Connected
 
-const API_URL = "http://localhost:5000/api/items";
+const API_URL = "https://campusleuth.onrender.com/api/items";
 
 let items = [];
 
@@ -30,7 +30,7 @@ async function loadItems() {
 }
 
 
-// 2. Display Items
+// Display Items
 
 function displayItems(data) {
 
@@ -57,10 +57,15 @@ function displayItems(data) {
             ? new Date(item.createdAt).toLocaleDateString()
             : "";
 
+        // Display uploaded image or default icon
+        const imageContent = item.imageUrl
+            ? `<img src="${item.imageUrl}" alt="${item.name}" class="uploaded-image">`
+            : `<div class="item-image">
+                   ${item.type === "LOST" ? "🔍" : "📦"}
+               </div>`;
+
         card.innerHTML = `
-            <div class="item-image">
-                ${item.type === "LOST" ? "🔍" : "📦"}
-            </div>
+            ${imageContent}
 
             <div class="item-info">
 
@@ -95,7 +100,6 @@ function displayItems(data) {
 
     });
 }
-
 
 // 3. View Item Details
 
@@ -160,40 +164,62 @@ searchInput.addEventListener("keydown", function(event) {
 
 const reportForm = document.getElementById("reportForm");
 
-
 reportForm.addEventListener("submit", async function(event) {
-
     event.preventDefault();
 
-    const newItem = {
-
-        name: document.getElementById("itemName").value,
-
-        type: document.getElementById("itemType").value,
-
-        category: document.getElementById("itemCategory").value,
-
-        location: document.getElementById("itemLocation").value,
-
-        description: document.getElementById("itemDescription").value
-
-    };
-
-
     try {
+        let imageUrl = "";
 
+        // 1. Get selected image
+        const imageFile = document.getElementById("itemImage").files[0];
+
+        // 2. Upload image to Cloudinary
+        if (imageFile) {
+            const formData = new FormData();
+            formData.append("image", imageFile);
+
+            const uploadResponse = await fetch(
+                "https://campusleuth.onrender.com/api/upload",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+            const uploadResult = await uploadResponse.json();
+
+            if (!uploadResponse.ok) {
+                throw new Error(uploadResult.message);
+            }
+
+            imageUrl = uploadResult.imageUrl;
+        }
+
+        // 3. Create item object
+        const newItem = {
+            name: document.getElementById("itemName").value,
+            type: document.getElementById("itemType").value,
+            category: document.getElementById("itemCategory").value,
+            location: document.getElementById("itemLocation").value,
+            description: document.getElementById("itemDescription").value,
+            imageUrl: imageUrl
+        };
+        console.log("Form data:", {
+            name: document.getElementById("itemName").value,
+            type: document.getElementById("itemType").value,
+            category: document.getElementById("itemCategory").value,
+            location: document.getElementById("itemLocation").value,
+            description: document.getElementById("itemDescription").value
+        });
+
+        // 4. Save item in MongoDB
         const response = await fetch(API_URL, {
-
             method: "POST",
-
             headers: {
                 "Content-Type": "application/json"
             },
-
             body: JSON.stringify(newItem)
-
         });
-
 
         const result = await response.json();
 
@@ -205,18 +231,14 @@ reportForm.addEventListener("submit", async function(event) {
 
         reportForm.reset();
 
+        // 5. Refresh items
         loadItems();
 
     } catch (error) {
-
         console.error("Error reporting item:", error);
-
-        alert("Unable to report item. Please try again.");
-
+        alert("Unable to report item: " + error.message);
     }
-
-});
-
+    });
 
 // 6. Image Preview
 
